@@ -1,8 +1,11 @@
-print("v4")
 dofile("konfig.lua")
+--dofile("temperature.lua")
+dofile("button.lua")
+LED=4
+gpio.mode(LED,gpio.OUTPUT)
+gpio.write(LED,gpio.LOW)
 wd=0
 m = mqtt.Client(ID, 120, USER,PW)
-dofile("temperature.lua")
 function server()
 	t=0
 	function x(c) end
@@ -10,7 +13,8 @@ function server()
 		m:on("offline", function(con) node.restart() end)
 		t=tmr.time()
 		print("MQTT ok") 
-		m:subscribe("/uptime",0, x)
+		m:subscribe(ID.."/uptime",0, x)
+		m:subscribe(ID.."/led",0, x)
 		m:subscribe(ID.."/cmd",0, x)
 		m:subscribe(ID.."/test.lua",0, x)
 		m:on("message", function(c, topic, data) 
@@ -18,6 +22,14 @@ function server()
 --			if data ~= nil then
 --				print(topic.." "..string.len(data))
 --			end
+			if topic == ID.."/led" then
+				local m=gpio.LOW
+				if data == "1" then
+					m=gpio.HIGH
+				end
+				gpio.mode(LED,gpio.OUTPUT)
+				gpio.write(LED,m)
+			end
 			if topic == ID.."/cmd" then
 				node.input(data.."\r\n")
 			end
@@ -30,13 +42,16 @@ function server()
 		end)
 		wd=0
 		p()
+		local a,b,c,d,e,f,g,h
+		a,b,c,d,e,f,g,h=node.info()
+		m:publish("/startup",string.format("%s %i.%i.%i %s %s %s %s %s %i",ID,a,b,c,d,e,f,g,h,node.heap()),1,0)
 	end)
 	function p()
 		if(wd==1) then
 			node.restart()
 		end
 		wd=1
-		m:publish("/uptime",ID.." "..node.heap().." "..(tmr.time()-t),0,0,x)
+		m:publish(ID.."/uptime",node.heap().." "..(tmr.time()-t),0,0,x)
 	end
 	tmr.stop(6)
 	tmr.alarm(6, 60000, 1, p)
