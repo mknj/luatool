@@ -2,6 +2,7 @@ print("v4")
 dofile("konfig.lua")
 wd=0
 m = mqtt.Client(ID, 120, USER,PW)
+dofile("temperature.lua")
 function server()
 	t=0
 	function x(c) end
@@ -37,17 +38,18 @@ function server()
 		wd=1
 		m:publish("/uptime",ID.." "..node.heap().." "..(tmr.time()-t),0,0,x)
 	end
-	tmr.stop(0)
-	tmr.alarm(0, 60000, 1, p)
+	tmr.stop(6)
+	tmr.alarm(6, 60000, 1, p)
 	print("wifi ok") 
 end
-tmr.alarm(0,5000,1,function()
+print("timer 6: MQTT watchdog")
+tmr.alarm(6,5000,1,function()
 	if(wd>60) then
 		node.restart()
 	end
 	wd=wd+1
 	if(wifi.sta.status()==5) then
-		tmr.stop(0)
+		tmr.stop(6)
 		server()
 	end
 end)
