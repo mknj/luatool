@@ -15,8 +15,12 @@ function temps()
     ow.select(ds_pin, addr)
     ow.write(ds_pin, 0xBE, 1)
     for i = 1, 9 do data[i] = ow.read(ds_pin) end
-
-    temp = (data[1] + 256 * data[2])*625
+    local tt
+    tt=data[2]
+    if tt >= 128 then
+	tt=tt-256
+    end
+    temp = (data[1] + 256 * tt)*625
     data = {}
     for i = 1, #addr do data[i] = string.format("%02X", addr:byte(i)) end 
     m:publish("/ow/"..table.concat(data, ':').."/temp",string.format("%i.%04i",temp/10000,temp%10000),0,0)
