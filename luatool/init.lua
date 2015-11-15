@@ -7,7 +7,7 @@ dofile("mqtt.lua")
 --gpio.write(LED,gpio.LOW)
 wd=0
 print("timer 6: WIFI watchdog")
-tmr.alarm(6,5000,1,function()
+tmr.alarm(6,1000,1,function()
 	if(wd>60) then
 		node.restart()
 	end
