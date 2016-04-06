@@ -1,7 +1,8 @@
+GPIO = {[0]=3,[1]=10,[2]=4,[3]=9,[4]=1,[5]=2,[10]=12,[12]=6,[13]=7,[14]=5,[15]=8,[16]=0}
 dofile("konfig.lua")
 --dofile("temperature.lua")
 dofile("button.lua")
-LED=4
+LED=GPIO[2]
 gpio.mode(LED,gpio.OUTPUT)
 gpio.write(LED,gpio.LOW)
 wd=0
@@ -23,12 +24,12 @@ function server()
 --				print(topic.." "..string.len(data))
 --			end
 			if topic == ID.."/led" then
-				local m=gpio.LOW
+				local x=gpio.LOW
 				if data == "1" then
-					m=gpio.HIGH
+					x=gpio.HIGH
 				end
 				gpio.mode(LED,gpio.OUTPUT)
-				gpio.write(LED,m)
+				gpio.write(LED,x)
 			end
 			if topic == ID.."/cmd" then
 				node.input(data.."\r\n")
