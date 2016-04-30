@@ -1,11 +1,15 @@
 GPIO = {[0]=3,[1]=10,[2]=4,[3]=9,[4]=1,[5]=2,[10]=12,[12]=6,[13]=7,[14]=5,[15]=8,[16]=0}
 dofile("konfig.lua")
---dofile("temperature.lua")
---dofile("button.lua")
 dofile("mqtt.lua")
---LED=4
---gpio.mode(LED,gpio.OUTPUT)
---gpio.write(LED,gpio.LOW)
+if file.exists("temperature.lua") then
+	dofile("temperature.lua")
+end
+if file.exists("button.lua") then
+	dofile("button.lua")
+end
+if file.exists("led.lua") then
+	dofile("led.lua")
+end
 wd=0
 print("timer 6: WIFI watchdog")
 tmr.alarm(6,1000,1,function()
