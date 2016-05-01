@@ -1,5 +1,5 @@
-local LED_PIN=4
-local LEDS=16
+LED_PIN=4
+LEDS=16
 function conv(data)
   local l=string.len(data or "")
   local i
@@ -30,3 +30,6 @@ sub("ws2812n",function(data)
     end
 end)
 
+print("WS812 ok")
+ws2812.writergb(LED_PIN, string.char(0,0,0):rep(LEDS))
+ws2812.writergb(LED_PIN, string.char(0,0,0):rep(LEDS))
