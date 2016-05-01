@@ -10,6 +10,9 @@ end
 if file.exists("led.lua") then
 	dofile("led.lua")
 end
+if file.exists("ws2812.lua") then
+	dofile("ws2812.lua")
+end
 wd=0
 print("timer 6: WIFI watchdog")
 tmr.alarm(6,1000,1,function()
